@@ -20,18 +20,21 @@ class FavoriteViewController: UIViewController {
         tableView.register(DictionaryCell.self, forCellReuseIdentifier: "DictionaryCell")
         return tableView
     }()
-    private var favorite:[Favorite] = []
+    private var favorite:[Favorite] = []{
+        didSet {
+            tableView.reloadData()
+        }
+    }
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        setupNavigationBar()
-        setupTableView()
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         favorite = fetch()
     }
-    
-    private func setupNavigationBar() {
-        navigationItem.title = "Favorite"
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        setupTableView()
     }
+    
     private func setupTableView() {
         view.addSubview(tableView)
         tableView.snp.makeConstraints { (make) in
@@ -61,7 +64,7 @@ extension FavoriteViewController: UITableViewDataSource{
 }
 extension FavoriteViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
-        let removeAction = UIContextualAction(style: .destructive, title: "Remove") { [weak self] (action, view, success) in
+        let removeAction = UIContextualAction(style: .destructive, title: "Remove") { (action, view, success) in
             let appDelegate = UIApplication.shared.delegate as! AppDelegate
             let context = appDelegate.persistentContainer.viewContext
             let fetchRequest: NSFetchRequest<Favorite> = Favorite.fetchRequest()
