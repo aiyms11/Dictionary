@@ -9,6 +9,10 @@
 import Foundation
 import Alamofire
 
+enum ContentType: Int {
+    case dictionary = 0, history
+}
+
 class SearchDictionaryViewModel {
     var service = DictionaryServiceImpl()
     var dictionary:[Dictionary] = []

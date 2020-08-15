@@ -40,7 +40,6 @@ class FavoriteViewController: UIViewController {
         tableView.snp.makeConstraints { (make) in
             make.edges.equalTo(view.safeAreaLayoutGuide)
         }
-        
     }
     private func fetch() -> [Favorite] {
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
@@ -55,7 +54,6 @@ extension FavoriteViewController: UITableViewDataSource{
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return favorite.count
     }
-
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "DictionaryCell", for: indexPath) as! DictionaryCell
         cell.configure(with: favorite[indexPath.row])

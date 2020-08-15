@@ -5,9 +5,9 @@
 //  Created by Madi Kabdrash on 7/30/20.
 //  Copyright © 2020 Aiyms. All rights reserved.
 //
-
-import UIKit
 import SnapKit
+import UIKit
+import Disk
 
 class DictionaryViewController: UIViewController {
     
@@ -15,8 +15,10 @@ class DictionaryViewController: UIViewController {
     private lazy var tableView: UITableView = {
         let tableView = UITableView()
         tableView.dataSource = self
+        tableView.delegate = self
         tableView.tableFooterView = UIView()
         tableView.register(DictionaryCell.self, forCellReuseIdentifier: "DictionaryCell")
+        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "Cell")
         return tableView
     }()
     private lazy var searchController: UISearchController = {
@@ -26,6 +28,8 @@ class DictionaryViewController: UIViewController {
         searchController.obscuresBackgroundDuringPresentation = true
         return searchController
     }()
+    private var contentType: ContentType = .history
+    private var searchedText: [SearchText]?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -34,6 +38,7 @@ class DictionaryViewController: UIViewController {
         viewModel.updateData = {
             self.tableView.reloadData()
         }
+        searchedText = try? Disk.retrieve("searchText.json", from: .caches, as: [SearchText].self)
     }
     
     private func setupNavigationBar() {
@@ -47,26 +52,49 @@ class DictionaryViewController: UIViewController {
         tableView.snp.makeConstraints { (make) in
             make.edges.equalTo(view.safeAreaLayoutGuide)
         }
-        
     }
-
 }
 
 extension DictionaryViewController: UITableViewDataSource{
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return viewModel.dictionary.count
+        switch contentType {
+        case .dictionary: return viewModel.dictionary.count
+        case .history: return searchedText?.count ?? 0
+        }
+        
     }
-    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "DictionaryCell", for: indexPath) as! DictionaryCell
-        cell.configure(with: viewModel.dictionary[indexPath.row])
-        return cell
+        switch contentType {
+        case .dictionary:
+            let cell = tableView.dequeueReusableCell(withIdentifier: "DictionaryCell", for: indexPath) as! DictionaryCell
+            cell.configure(with: viewModel.dictionary[indexPath.row])
+            return cell
+        case .history:
+            let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
+            cell.textLabel?.text = searchedText?[indexPath.row].word ?? ""
+            return cell
+        }
+        
+    }
+}
+extension DictionaryViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        switch contentType {
+        case .dictionary:
+            tableView.deselectRow(at: indexPath, animated: true)
+        case .history:
+            contentType = .dictionary
+            viewModel.fetchResult(by: searchedText?[indexPath.row].word ?? "")
+        }
     }
 }
 extension DictionaryViewController: UISearchBarDelegate {
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
            if let searchText = searchController.searchBar.text {
-               viewModel.fetchResult(by: searchText)
+                contentType = .dictionary
+                viewModel.fetchResult(by: searchText)
+                let search = SearchText(word: searchText)
+                try? Disk.append(search, to: "searchText.json", in: .caches)
            }
        }
 }

@@ -8,4 +8,5 @@ target 'Dictionary' do
   # Pods for Dictionary
 	pod 'Alamofire'
 	pod 'SnapKit'
+	pod 'Disk'
 end
