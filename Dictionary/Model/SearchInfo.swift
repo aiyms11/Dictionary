@@ -8,7 +8,8 @@
 
 import Foundation
 
-struct SearchText: Codable {
+struct SearchInfo: Codable {
     let word: String
+    let date: Double
 }
 

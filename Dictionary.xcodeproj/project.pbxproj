@@ -19,7 +19,7 @@
 		E111C60E24E7C57F0081B99F /* FavoriteViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E111C60D24E7C57F0081B99F /* FavoriteViewController.swift */; };
 		E111C61124E7C8200081B99F /* DictionaryCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E111C61024E7C8200081B99F /* DictionaryCell.swift */; };
 		E111C61324E7F0C90081B99F /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = E111C61224E7F0C90081B99F /* .gitignore */; };
-		E12DD15E24E80755005F5442 /* SearchText.swift in Sources */ = {isa = PBXBuildFile; fileRef = E12DD15D24E80755005F5442 /* SearchText.swift */; };
+		E12DD15E24E80755005F5442 /* SearchInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = E12DD15D24E80755005F5442 /* SearchInfo.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -39,7 +39,7 @@
 		E111C60D24E7C57F0081B99F /* FavoriteViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoriteViewController.swift; sourceTree = "<group>"; };
 		E111C61024E7C8200081B99F /* DictionaryCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DictionaryCell.swift; sourceTree = "<group>"; };
 		E111C61224E7F0C90081B99F /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
-		E12DD15D24E80755005F5442 /* SearchText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchText.swift; sourceTree = "<group>"; };
+		E12DD15D24E80755005F5442 /* SearchInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchInfo.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -136,7 +136,7 @@
 			isa = PBXGroup;
 			children = (
 				E111C60B24E7C2920081B99F /* Dictionary.swift */,
-				E12DD15D24E80755005F5442 /* SearchText.swift */,
+				E12DD15D24E80755005F5442 /* SearchInfo.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -272,7 +272,7 @@
 				E111C61124E7C8200081B99F /* DictionaryCell.swift in Sources */,
 				E111C5ED24E7C0FA0081B99F /* AppDelegate.swift in Sources */,
 				E111C60C24E7C2920081B99F /* Dictionary.swift in Sources */,
-				E12DD15E24E80755005F5442 /* SearchText.swift in Sources */,
+				E12DD15E24E80755005F5442 /* SearchInfo.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

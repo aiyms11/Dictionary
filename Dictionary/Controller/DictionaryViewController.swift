@@ -29,7 +29,13 @@ class DictionaryViewController: UIViewController {
         return searchController
     }()
     private var contentType: ContentType = .history
-    private var searchedText: [SearchText]?
+    private var searchInfoList: [SearchInfo]? {
+        didSet{
+            searchInfoList?.sort {$0.date > $1.date}
+            tableView.reloadData()
+        }
+    }
+    private let searchListCapasity = 5
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -38,7 +44,7 @@ class DictionaryViewController: UIViewController {
         viewModel.updateData = {
             self.tableView.reloadData()
         }
-        searchedText = try? Disk.retrieve("searchText.json", from: .caches, as: [SearchText].self)
+        searchInfoList = try? Disk.retrieve("searchInfo.json", from: .caches, as: [SearchInfo].self)
     }
     
     private func setupNavigationBar() {
@@ -59,7 +65,7 @@ extension DictionaryViewController: UITableViewDataSource{
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch contentType {
         case .dictionary: return viewModel.dictionary.count
-        case .history: return searchedText?.count ?? 0
+        case .history: return searchInfoList?.count ?? 0
         }
         
     }
@@ -71,7 +77,7 @@ extension DictionaryViewController: UITableViewDataSource{
             return cell
         case .history:
             let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
-            cell.textLabel?.text = searchedText?[indexPath.row].word ?? ""
+            cell.textLabel?.text = searchInfoList?[indexPath.row].word ?? ""
             return cell
         }
         
@@ -84,18 +90,24 @@ extension DictionaryViewController: UITableViewDelegate {
             tableView.deselectRow(at: indexPath, animated: true)
         case .history:
             contentType = .dictionary
-            viewModel.fetchResult(by: searchedText?[indexPath.row].word ?? "")
+            viewModel.fetchResult(by: searchInfoList?[indexPath.row].word ?? "")
         }
     }
 }
 extension DictionaryViewController: UISearchBarDelegate {
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-           if let searchText = searchController.searchBar.text {
-                contentType = .dictionary
-                viewModel.fetchResult(by: searchText)
-                let search = SearchText(word: searchText)
-                try? Disk.append(search, to: "searchText.json", in: .caches)
-           }
-       }
+        if let searchText = searchController.searchBar.text {
+            contentType = .dictionary
+            viewModel.fetchResult(by: searchText)
+            if searchInfoList?.count == searchListCapasity {
+                searchInfoList?.removeLast()
+            }
+            searchInfoList?.append(SearchInfo(word: searchText, date: Date.timeIntervalSinceReferenceDate))
+            if Disk.exists("searchInfo.json", in: .caches) {
+                try? Disk.clear(.caches)
+            }
+            try? Disk.save(searchInfoList, to: .caches, as: "searchInfo.json")
+        }
+    }
 }
 
